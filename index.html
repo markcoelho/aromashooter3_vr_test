@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+    <title>Hello 3D World!</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-locomotion@0.2.0/dist/aframe-locomotion.umd.min.js"></script>
+    
+      <script src="https://unpkg.com/aframe-aabb-collider-component@3.1.0/dist/aframe-aabb-collider-component.min.js"></script>
+    
+    
+  </head>
+  <body>
+    
+    <a-scene antialias="true" renderer="colorManagement: true; physicallyCorrectLights: true;" shadow="type: basic; autoUpdate: true" loaded="initComponents">
+      
+  <a-assets timeout="30000" loaded="assetsLoaded">
+    
+    <a-asset-item id="kitchenCounterModel" src="assets/bancada1.glb"></a-asset-item>
+    
+
+    <a-asset-item id="coffeebagmodel" src="assets/coffee_bag.glb"></a-asset-item>
+    <a-asset-item id="orangemodel" src="assets/orange.glb"></a-asset-item>
+    <a-asset-item id="lemonmodel" src="assets/lemon.glb"></a-asset-item>
+    <a-asset-item id="rosemodel" src="assets/rose.glb"></a-asset-item>
+    <a-asset-item id="chocolatemodel" src="assets/chocolate.glb"></a-asset-item>
+    
+
+
+    <img id="popcornNormal" src="assets/normal.png">
+    <img id="ceilingTexture" src="assets/ceiling.jpg">
+    <img id="floorTexture" src="assets/floor.jpg">
+  </a-assets>
+
+  <a-entity light="type: ambient; color: #FFF; intensity: 0.1"></a-entity>
+  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: true; shadowBias: -0.003; decay: 1.4; distance: 10" position="2 2.9 -4.5"></a-entity>
+  <a-sphere position="2 3.5 -4.5" radius="0.5" color="white"></a-sphere>
+  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: true; shadowBias: -0.003; decay: 1.4; distance: 10" position="-2 2.9 -4.5"></a-entity>
+  <a-sphere position="-2 3.5 -4.5" radius="0.5" color="white"></a-sphere>
+  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: true; shadowBias: -0.003; decay: 1.4; distance: 10" position="2 2.9 1"></a-entity>
+  <a-sphere position="2 3.5 1" radius="0.5" color="white"></a-sphere>
+  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: true; shadowBias: -0.003; decay: 1.4; distance: 10" position="-2 2.9 1"></a-entity>
+  <a-sphere position="-2 3.5 1" radius="0.5" color="white"></a-sphere>
+
+      
+  <a-sphere log-aabb-collisions aabb-collider="objects: .hitbox; debug:false; interval:1;"  class="grabbable" id="ball" position="0 1 -1" radius="0.05" color="red"></a-sphere>
+      
+  <a-sphere log-aabb-collisions aabb-collider="objects: .hitbox; debug:false; interval:1;"  class="grabbable" id="ball2" position="0 0.5 -1" radius="0.05" color="yellow"></a-sphere>
+      
+  <a-box log-aabb-collisions aabb-collider="objects: .hitbox; debug:false; interval:1;"  class="grabbable" id="box1" position="0 1.5 -1" width="0.05" depth="0.05" height="0.1" color="blue"></a-box>
+      
+
+<a-entity id="rig" position="2 0 -4" rotation= "0 -45 0">
+  <a-entity id="camera" camera></a-entity>
+  
+  <a-entity id="leftHand" hand-controls="hand: left" smooth-locomotion="target: #rig; reference: #camera" grab="positionOffset: 0.02 0 0; rotationOffset: 0 0 0 1"></a-entity>
+  
+  <a-entity id="rightHand" hand-controls="hand: right" snap-turn="target: #rig; reference: #camera" grab="positionOffset: -0.02 0 0; rotationOffset: 0 0 0 1"></a-entity>
+</a-entity>
+
+<a-entity id="leftHandModel" position="0 0 0"></a-entity> <!-- Separate hand model -->
+<a-entity id="rightHandModel" position="0 0 0"></a-entity> <!-- Separate hand model -->
+
+
+
+  <a-entity id="kitchenCounterEntity" gltf-model="#kitchenCounterModel" position="-2 -0.8 0" scale="1.6 1.6 1.6" shadow="cast: true; receive: true"></a-entity>
+  <a-plane position="0 -0.8 -1.5" rotation="-90 0 0" width="11" height="11" material="src: #floorTexture; side: double; repeat: 7 7;" shadow="receive: true"></a-plane>
+  <a-plane position="0 3.1 -1.5" rotation="-90 0 0" width="11" height="11" material="src: #ceilingTexture; side: double; repeat: 3 3; shader: flat;" shadow="receive: true"></a-plane>
+  <a-box position="-0.075 1.1 -1.4" width="9" height="5" depth="10" material="color: lightgray; normalMap: #popcornNormal; normalTextureRepeat: 5 5; side: double" shadow="receive: true"></a-box>
+
+  <a-box id="leftwall" class="hitbox" position="-9 1.1 -1.4" width="9" height="5" depth="10" material="color: red; transparent: true; opacity:0;"></a-box>
+  <a-box id="frontwall" class="hitbox" position="0 1.1 -11.4" width="10" height="5" depth="10" material="color: red; transparent: true; opacity:0;"></a-box>
+  <a-box id="rightwall" class="hitbox" position="8.9 1.1 -1.4" width="9" height="5" depth="10" material="color: red; transparent: true; opacity:0;"></a-box>
+  <a-box id="backwall" class="hitbox" position="0 1.1 8.5" width="10" height="5" depth="10" material="color: red; transparent: true; opacity:0;"></a-box>
+      
+  <a-box id="floor" class="hitbox" position="0 -1.3 0" width="20" height="1" depth="20" material="side: double; color: red; transparent: true; opacity:0;"></a-box>
+  <a-box id="oven" class="hitbox" position="0 1 -6.45" width="2.9" height="5" depth="2" material="side: double; color: red; transparent: true; opacity:0;"></a-box>
+  
+  <a-box id="rightcabinet" class="hitbox" position="4.68 2.65 -3.5" width="2" height="2" depth="7" material="side: double; color: red; transparent: true; opacity:0;"></a-box>
+  <a-box id="frontcabinet" class="hitbox" position="4.92 2.65 -6.69" width="7" height="2" depth="2" material="side: double; color: red; transparent: true; opacity:0;"></a-box>
+      
+  <a-box id="rightcounter" class="hitbox" position="4.3 -0.29 -3.5" width="2" height="2" depth="7" material="side: double; color: red; transparent: true; opacity:0;"></a-box>
+  <a-box id="frontcounter" class="hitbox" position="4.92 -0.29 -6.45" width="7" height="2" depth="2" material="side: double; transparent: true; opacity:0;"></a-box>
+      
+
+      
+  <a-entity log-aabb-collisions aabb-collider="objects: .hitbox; debug:false; interval:1;"  class="grabbable" id="coffeebag" gltf-model="#coffeebagmodel" position="3.7 0.74 -4.6" scale="0.05 0.05 0.05" rotation="0 -90 0" shadow="cast: true; receive: false" material="color: red;" ></a-entity>
+  <a-entity log-aabb-collisions aabb-collider="objects: .hitbox; debug:false; interval:1;"  class="grabbable" id="orange" gltf-model="#orangemodel" position="3.5 0.78 -4.9" scale="2.4 2.4 2.4" rotation="0 -90 0" shadow="cast: true; receive: false" material="color: red;" ></a-entity>
+  <a-entity log-aabb-collisions aabb-collider="objects: .hitbox; debug:false; interval:1;"  class="grabbable" id="lemon" gltf-model="#lemonmodel" position="3.5 0.74 -5.2" scale="0.03 0.03 0.03" rotation="0 -90 0" shadow="cast: true; receive: false" material="color: red;" ></a-entity>
+  <a-entity log-aabb-collisions aabb-collider="objects: .hitbox; debug:false; interval:1;"  class="grabbable" id="rose" gltf-model="#rosemodel" position="3.4 0.83 -5.6" scale="0.12 0.12 0.12" rotation="0 -90 90" shadow="cast: true; receive: false" material="color: red;" ></a-entity>
+  <a-entity log-aabb-collisions aabb-collider="objects: .hitbox; debug:false; interval:1;"  class="grabbable" id="chocolate" gltf-model="#chocolatemodel" position="2.8 0.74 -5.6" scale="0.017 0.017 0.017" rotation="0 -90 0" shadow="cast: true; receive: false" material="color: red;" ></a-entity>
+
+      <!--
+      <a-entity log-aabb-collisions aabb-collider="objects: .hitbox; debug:true; interval:1;"  class="grabbable" id="pine" gltf-model="#pinemodel" position="3.1 0.8 -5.6" scale="0.06 0.06 0.06" rotation="0 -90 0" shadow="cast: true; receive: false" material="color: red;" ></a-entity>
+      -->
+      
+      
+    </a-scene>
+
+
+<script>
+  
+  
+  //funcao de pedido do cliente ao server para emitir cheiro
+  function pedidocliente(slot, int, dur) {
+    const url = `https://${window.location.hostname}:3006/variables/${slot}/${int}/${dur}`;
+    fetch(url)
+        .then(response => response.text())
+        .then(data => {
+            console.log(`HTTPS request to ${url} was successful: ${data}`);
+        })
+        .catch(error => {
+            console.error(`Error sending HTTPS request to ${url}:`, error);
+        });
+    }
+  
+  
+  
+  
+  let handpos;
+          let loggedObjects = new Set(); // Track objects that have been smelled
+
+
+  AFRAME.registerComponent('grab', {
+    schema: {
+      hand: { type: 'string' },
+      positionOffset: { type: 'vec3', default: { x: 0, y: 0, z: 0 } },
+      rotationOffset: { type: 'vec4', default: { x: 0, y: 0, z: 0, w: 1 } }
+    },
+    init: function () {
+      this.grabbing = false;
+      this.grabbedEl = null;
+      this.handEl = this.el;
+      this.offset = new THREE.Vector3();
+      this.offsetRotation = new THREE.Quaternion();
+      this.cameraEl = document.querySelector('[camera]');
+
+      this.handEl.addEventListener('triggerdown', this.onTriggerDown.bind(this));
+      this.handEl.addEventListener('triggerup', this.onTriggerUp.bind(this));
+    },
+    tick: function () {
+      if (this.grabbing && this.grabbedEl && this.grabbedEl.getAttribute('grabbed') === 'true') {
+        let handPosition = new THREE.Vector3();
+        let handRotation = new THREE.Quaternion();
+        this.handEl.object3D.getWorldPosition(handPosition);
+        this.handEl.object3D.getWorldQuaternion(handRotation);
+        handpos = handPosition.clone();
+
+        // Calculate the new position and rotation based on the hand's position and rotation
+        let pivot = new THREE.Vector3().copy(handPosition);
+        let offsetRotated = this.offset.clone().applyQuaternion(handRotation);
+        let newPosition = pivot.clone().add(offsetRotated);
+        this.grabbedEl.object3D.position.copy(newPosition);
+
+        let newRotation = new THREE.Quaternion().multiplyQuaternions(handRotation, this.offsetRotation);
+        this.grabbedEl.object3D.quaternion.copy(newRotation);
+        
+        
+        
+
+        //VERIFICAR OBJETO PERTO DA CAMARA PARA CHAMAR A FUNCAO DE PEDIDO DE CLIENTE
+        //VERIFICAR OBJETO PERTO DA CAMARA PARA CHAMAR A FUNCAO DE PEDIDO DE CLIENTE
+        let cameraPosition = new THREE.Vector3();
+        this.cameraEl.object3D.getWorldPosition(cameraPosition);
+        cameraPosition.y += 1; // Adjust height as needed
+
+        Array.from(document.querySelectorAll('.grabbable')).forEach(grabbableEl => {
+          let elPosition = new THREE.Vector3();
+          grabbableEl.object3D.getWorldPosition(elPosition);
+
+          if (cameraPosition.distanceTo(elPosition) <= 1) { // Adjust radius as needed
+            if (!loggedObjects.has(grabbableEl.getAttribute('id'))) {
+              console.log('Object within radius:', grabbableEl.getAttribute('id'));
+
+              // Call pedidocliente with appropriate value based on the ID
+              const idMap = {
+                'coffeebag': 1,
+                'orange': 2,
+                'lemon': 3,
+                'rose': 4,
+                'chocolate': 5
+              };
+
+              const id = grabbableEl.getAttribute('id');
+              if (idMap[id]) {
+                pedidocliente([idMap[id]], [10], [10]);
+              }
+
+              loggedObjects.add(grabbableEl.getAttribute('id')); // Add the object ID to the set
+            }
+          } else {
+            loggedObjects.delete(grabbableEl.getAttribute('id')); // Remove the object ID from the set when it leaves the radius
+          }
+        });
+
+
+
+
+        
+        
+      } else {
+        // Apply gravity-like behavior when not being grabbed
+        Array.from(document.querySelectorAll('.grabbable')).forEach(grabbableEl => {
+          if (grabbableEl.getAttribute('grabbed') === 'false') {
+            let position = grabbableEl.object3D.position;
+            let boundingBox = new THREE.Box3().setFromObject(grabbableEl.object3D);
+            let height = boundingBox.max.y - boundingBox.min.y;
+            let targetY;
+
+            // bancadas Y
+            if (position.x >= 3.27405 && position.x <= 4.39335 && position.z >= -6.3933 && position.z <= 0.0093) {
+              targetY = 0.7 + (height / 2); // bancada direita
+            } else if (position.x >= 1.4677248 && position.x <= 4.3675248 && position.z >= -6.4156248 && position.z <= -5.4812748) {
+              targetY = 0.7 + (height / 2); // bancada frente
+            } else {
+              targetY = 0 + (height / 2);
+            }
+
+            if (position.y > targetY) {
+              position.y -= 0.01; // Adjust this value to control the falling speed
+              if (position.y < targetY) {
+                position.y = targetY; // Ensure the position doesn't go below the target Y position
+              }
+              grabbableEl.object3D.position.copy(position);
+            }
+          }
+        });
+      }
+    },
+    onTriggerDown: function () {
+      let handPosition = new THREE.Vector3();
+      let handRotation = new THREE.Quaternion();
+      this.handEl.object3D.getWorldPosition(handPosition);
+      this.handEl.object3D.getWorldQuaternion(handRotation);
+
+      Array.from(document.querySelectorAll('.grabbable')).forEach(grabbableEl => {
+        let elPosition = new THREE.Vector3();
+        grabbableEl.object3D.getWorldPosition(elPosition);
+
+        if (handPosition.distanceTo(elPosition) <= 0.15) {
+          this.grabbing = true;
+          this.grabbedEl = grabbableEl;
+
+          // Maintain the current offset and rotation between the hand and the object
+          this.offset.copy(elPosition).sub(handPosition);
+          this.offsetRotation.copy(handRotation).inverse().multiply(grabbableEl.object3D.quaternion);
+
+          grabbableEl.setAttribute('grabbed', 'true');
+        }
+      });
+    },
+    onTriggerUp: function () {
+      if (this.grabbedEl) {
+        this.grabbedEl.setAttribute('grabbed', 'false');
+      }
+      this.grabbing = false;
+      this.grabbedEl = null;
+    }
+  });
+
+  AFRAME.registerComponent('log-aabb-collisions', {
+    init: function () {
+      this.el.addEventListener('hitstart', evt => {
+        let intersectedEls = evt.detail.intersectedEls || [];
+        if (intersectedEls.length > 0) {
+          intersectedEls.forEach(intersectedEl => {
+            if (intersectedEl.classList.contains('hitbox')) {
+              let grabbableEls = document.querySelectorAll('.grabbable');
+              grabbableEls.forEach(grabbableEl => {
+                grabbableEl.setAttribute('grabbed', 'false');
+              });
+              console.log("Collision detected, all grabbable elements set to not grabbed.");
+            }
+          });
+        } else {
+          console.log("No intersected elements found.");
+        }
+      });
+    }
+  });
+
+  function pedidocliente(slot, int, dur) {
+    console.log(slot, int, dur);
+    const url = `https://${window.location.hostname}:3006/variables/${slot}/${int}/${dur}`;
+    fetch(url)
+      .then(response => response.text())
+      .then(data => console.log(`HTTPS request to ${url} was successful: ${data}`))
+      .catch(error => console.error(`Error sending HTTPS request to ${url}:`, error));
+  }
+</script>
+
+
+
+  </body>
+</html>
