@@ -6,6 +6,7 @@ const https = require('https');
 const fs = require('fs');
 const ip = require('ip');
 const selfsigned = require('selfsigned');
+const os = require('os');
 
 const appclient = express();
 const proxy = httpProxy.createProxyServer({});
@@ -62,10 +63,25 @@ appclient.get('/variables/:var1/:var2/:var3', (req, res) => {
     res.send(`Variables received and processed: ${var1}, ${var2}, ${var3}`);
 });
 
-// HTTPS server for appclient
-https.createServer(options, appclient).listen(port2, ip.address(), () => {
-    console.log(`HTTPS Server running at https://${ip.address()}:${port2}/`);
+
+const interfaces = os.networkInterfaces();
+let ipAddress = '';
+
+for (let iface in interfaces) {
+    for (let alias of interfaces[iface]) {
+        if (alias.family === 'IPv4' && !alias.internal && alias.address.startsWith('192.168.')) {
+            ipAddress = alias.address;
+            break;
+        }
+    }
+}
+
+https.createServer(options, appclient).listen(port2, '0.0.0.0', () => {
+    console.log(`HTTPS Server running at https://${ipAddress}:${port2}/`);
 });
+
+
+
 
 // Define the diffuseAroma function
 let lastCallTime = 0;

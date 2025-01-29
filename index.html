@@ -35,13 +35,13 @@
   </a-assets>
 
   <a-entity light="type: ambient; color: #FFF; intensity: 0.1"></a-entity>
-  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: true; shadowBias: -0.003; decay: 1.4; distance: 10" position="2 2.9 -4.5"></a-entity>
+  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: false; shadowBias: -0.003; decay: 1.4; distance: 10" position="2 2.9 -4.5"></a-entity>
   <a-sphere position="2 3.5 -4.5" radius="0.5" color="white"></a-sphere>
-  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: true; shadowBias: -0.003; decay: 1.4; distance: 10" position="-2 2.9 -4.5"></a-entity>
+  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: false; shadowBias: -0.003; decay: 1.4; distance: 10" position="-2 2.9 -4.5"></a-entity>
   <a-sphere position="-2 3.5 -4.5" radius="0.5" color="white"></a-sphere>
-  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: true; shadowBias: -0.003; decay: 1.4; distance: 10" position="2 2.9 1"></a-entity>
+  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: false; shadowBias: -0.003; decay: 1.4; distance: 10" position="2 2.9 1"></a-entity>
   <a-sphere position="2 3.5 1" radius="0.5" color="white"></a-sphere>
-  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: true; shadowBias: -0.003; decay: 1.4; distance: 10" position="-2 2.9 1"></a-entity>
+  <a-entity light="type: point; color: #FFF; intensity: 9; castShadow: false; shadowBias: -0.003; decay: 1.4; distance: 10" position="-2 2.9 1"></a-entity>
   <a-sphere position="-2 3.5 1" radius="0.5" color="white"></a-sphere>
 
       
@@ -53,7 +53,9 @@
       
 
 <a-entity id="rig" position="2 0 -4" rotation= "0 -45 0">
-  <a-entity id="camera" camera></a-entity>
+  <a-entity id="camera" camera>
+    <a-sphere log-aabb-collisions aabb-collider="objects: .grabbable; debug:false; interval:1;" id="cheirohitbox" position="0 0 -0.1" radius="0.05"  material="color: red; transparent: true; opacity:0;"></a-sphere>
+  </a-entity>
   
   <a-entity id="leftHand" hand-controls="hand: left" smooth-locomotion="target: #rig; reference: #camera" grab="positionOffset: 0.02 0 0; rotationOffset: 0 0 0 1"></a-entity>
   
@@ -65,10 +67,10 @@
 
 
 
-  <a-entity id="kitchenCounterEntity" gltf-model="#kitchenCounterModel" position="-2 -0.8 0" scale="1.6 1.6 1.6" shadow="cast: true; receive: true"></a-entity>
-  <a-plane position="0 -0.8 -1.5" rotation="-90 0 0" width="11" height="11" material="src: #floorTexture; side: double; repeat: 7 7;" shadow="receive: true"></a-plane>
-  <a-plane position="0 3.1 -1.5" rotation="-90 0 0" width="11" height="11" material="src: #ceilingTexture; side: double; repeat: 3 3; shader: flat;" shadow="receive: true"></a-plane>
-  <a-box position="-0.075 1.1 -1.4" width="9" height="5" depth="10" material="color: lightgray; normalMap: #popcornNormal; normalTextureRepeat: 5 5; side: double" shadow="receive: true"></a-box>
+  <a-entity id="kitchenCounterEntity" gltf-model="#kitchenCounterModel" position="-2 -0.8 0" scale="1.6 1.6 1.6" shadow="cast: false; receive: false"></a-entity>
+  <a-plane position="0 -0.8 -1.5" rotation="-90 0 0" width="11" height="11" material="src: #floorTexture; side: double; repeat: 7 7;" shadow="receive: false"></a-plane>
+  <a-plane position="0 3.1 -1.5" rotation="-90 0 0" width="11" height="11" material="src: #ceilingTexture; side: double; repeat: 3 3; shader: flat;" shadow="receive: false"></a-plane>
+  <a-box position="-0.075 1.1 -1.4" width="9" height="5" depth="10" material="color: lightgray; normalMap: #popcornNormal; normalTextureRepeat: 5 5; side: double" shadow="receive: false"></a-box>
 
   <a-box id="leftwall" class="hitbox" position="-9 1.1 -1.4" width="9" height="5" depth="10" material="color: red; transparent: true; opacity:0;"></a-box>
   <a-box id="frontwall" class="hitbox" position="0 1.1 -11.4" width="10" height="5" depth="10" material="color: red; transparent: true; opacity:0;"></a-box>
@@ -101,7 +103,44 @@
 
 
 <script>
-  
+
+AFRAME.registerComponent('log-aabb-collisions', {
+  init: function () {
+    const el = this.el;
+
+    el.addEventListener('hitstart', evt => {
+      console.log("hitstart event fired", evt);
+      
+      const intersectedEls = evt.detail.intersectedEls || [];
+      if (intersectedEls.length > 0) {
+        intersectedEls.forEach(intersectedEl => {
+          if (intersectedEl.classList.contains('grabbable')) {
+            console.log("cheirohitbox collided with", intersectedEl.id);
+            
+            // Call your function upon collision
+            const idMap = {
+              'coffeebag': 1,
+              'orange': 2,
+              'lemon': 3,
+              'rose': 4,
+              'chocolate': 5
+            };
+
+            const id = intersectedEl.getAttribute('id');
+            if (idMap[id]) {
+              pedidocliente([idMap[id]], [10], [10]); // Call function when object is detected
+            }
+          }
+        });
+      } else {
+        console.log("No intersected elements found in hitstart event.");
+      }
+    });
+  }
+});
+
+
+
   
   //funcao de pedido do cliente ao server para emitir cheiro
   function pedidocliente(slot, int, dur) {
@@ -109,10 +148,10 @@
     fetch(url)
         .then(response => response.text())
         .then(data => {
-            console.log(`HTTPS request to ${url} was successful: ${data}`);
+            //console.log(`HTTPS request to ${url} was successful: ${data}`);
         })
         .catch(error => {
-            console.error(`Error sending HTTPS request to ${url}:`, error);
+            //console.error(`Error sending HTTPS request to ${url}:`, error);
         });
     }
   
@@ -156,49 +195,8 @@
 
         let newRotation = new THREE.Quaternion().multiplyQuaternions(handRotation, this.offsetRotation);
         this.grabbedEl.object3D.quaternion.copy(newRotation);
-        
-        
-        
-
-        //VERIFICAR OBJETO PERTO DA CAMARA PARA CHAMAR A FUNCAO DE PEDIDO DE CLIENTE
-        //VERIFICAR OBJETO PERTO DA CAMARA PARA CHAMAR A FUNCAO DE PEDIDO DE CLIENTE
-        let cameraPosition = new THREE.Vector3();
-        this.cameraEl.object3D.getWorldPosition(cameraPosition);
-        cameraPosition.y += 1; // Adjust height as needed
-
-        Array.from(document.querySelectorAll('.grabbable')).forEach(grabbableEl => {
-          let elPosition = new THREE.Vector3();
-          grabbableEl.object3D.getWorldPosition(elPosition);
-
-          if (cameraPosition.distanceTo(elPosition) <= 1) { // Adjust radius as needed
-            if (!loggedObjects.has(grabbableEl.getAttribute('id'))) {
-              console.log('Object within radius:', grabbableEl.getAttribute('id'));
-
-              // Call pedidocliente with appropriate value based on the ID
-              const idMap = {
-                'coffeebag': 1,
-                'orange': 2,
-                'lemon': 3,
-                'rose': 4,
-                'chocolate': 5
-              };
-
-              const id = grabbableEl.getAttribute('id');
-              if (idMap[id]) {
-                pedidocliente([idMap[id]], [10], [10]);
-              }
-
-              loggedObjects.add(grabbableEl.getAttribute('id')); // Add the object ID to the set
-            }
-          } else {
-            loggedObjects.delete(grabbableEl.getAttribute('id')); // Remove the object ID from the set when it leaves the radius
-          }
-        });
 
 
-
-
-        
         
       } else {
         // Apply gravity-like behavior when not being grabbed
@@ -260,29 +258,10 @@
     }
   });
 
-  AFRAME.registerComponent('log-aabb-collisions', {
-    init: function () {
-      this.el.addEventListener('hitstart', evt => {
-        let intersectedEls = evt.detail.intersectedEls || [];
-        if (intersectedEls.length > 0) {
-          intersectedEls.forEach(intersectedEl => {
-            if (intersectedEl.classList.contains('hitbox')) {
-              let grabbableEls = document.querySelectorAll('.grabbable');
-              grabbableEls.forEach(grabbableEl => {
-                grabbableEl.setAttribute('grabbed', 'false');
-              });
-              console.log("Collision detected, all grabbable elements set to not grabbed.");
-            }
-          });
-        } else {
-          console.log("No intersected elements found.");
-        }
-      });
-    }
-  });
+ 
 
   function pedidocliente(slot, int, dur) {
-    console.log(slot, int, dur);
+    //console.log(slot, int, dur);
     const url = `https://${window.location.hostname}:3006/variables/${slot}/${int}/${dur}`;
     fetch(url)
       .then(response => response.text())
