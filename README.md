@@ -1,4 +1,3 @@
-Here’s the formatted text you can copy and paste into a README file:
 
 ```markdown
 # AromaShooter3 VR Test
