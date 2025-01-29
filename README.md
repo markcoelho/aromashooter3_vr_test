@@ -1,8 +1,8 @@
 
-```markdown
 # AromaShooter3 VR Test
 
-This project explores the integration of the AromaShooter 3 with VR experiences, specifically utilizing the Meta Quest 2 headset. It was developed using equipment from the VR lab at the University of Coimbra by Marcelo Coelho, under the supervision of Professor Jorge Cardoso, and was completed in January 2025.
+This project explores the integration of the AromaShooter 3 for VR experiences with smell. It was developed using equipment from the VR lab at the University of Coimbra by Marcelo Coelho, under the supervision of Professor Jorge Cardoso, and was completed in January 2025.
+The VR environment was developed in A-Frame.
 
 ## How to Run the Server
 
@@ -25,12 +25,12 @@ When the server starts, it will:
   ```
   Self-signed certificate generated successfully.
   ```
-  This certificate is essential for running the web program in HTTPS, as the Meta Quest 2 only supports HTTPS pages.
+  This certificate is essential for running the web program in HTTPS, as for example the Meta Quest 2 only supports HTTPS pages.
 - Show the following message:
   ```
   HTTPS Server running at https://x.x.x.x:3006/
   ```
-  Replace `x.x.x.x` with your server’s local IP address.
+   `x.x.x.x` should be the IP of your machine on your wifi network. You can confirm this by running ipconfig.
 
 ### Accessing the Webpage on the Meta Quest 2
 - Make sure the Meta Quest 2 is connected to the same network as the server.
@@ -80,14 +80,15 @@ The AromaShooter 3 uses a cartridge system with six slots, each capable of holdi
 ---
 
 ## Troubleshooting
+Your wi-fi network should be set to "private" on the machine where you are running the server. When it's set to "public" it usually doesn't communicate well with other devices.
+
 - If the headset cannot access the server URL:
-  - Verify the server’s IP address matches the displayed URL.
+  - Verify the server’s IP address matches the displayed URL, including "HTTPS" at the start.
   - Ensure all devices are on the same Wi-Fi network.
 - If the AromaShooter fails to connect to Wi-Fi:
+  - Wait a little bit, sometimes it takes a while to connect. 
   - Revisit the setup steps and check the Wi-Fi credentials.
-  - Look for interference or weak Wi-Fi signals.
 
 With the server, VR headset, and AromaShooter 3 all connected, you’re ready to explore integrating scents into VR experiences. Enjoy experimenting!
-```
 
-Let me know if you need further edits!
+---
