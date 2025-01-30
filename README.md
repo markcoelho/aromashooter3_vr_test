@@ -20,7 +20,9 @@ The 3D environment made in A-frame is hosted on the server, and not online (inde
 
 The server, headset and aromashooter should all be on the same wifi network.
 
-The VR headset (client) sends the following request to the server:
+
+
+When an object is close to the users head, the VR headset (client) sends the following request to the server:
 
 ```
 function pedidocliente(slot, int, dur) {
