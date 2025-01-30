@@ -18,6 +18,8 @@ This project works by running a server on a PC. This server will allow communica
 
 The 3D environment made in A-frame is hosted on the server, and not online (index.html)
 
+The server, headset and aromashooter should all be on the same wifi network.
+
 The VR headset (client) sends the following request to the server:
 
 ```
