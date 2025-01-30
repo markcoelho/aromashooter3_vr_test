@@ -113,4 +113,4 @@ function diffuseAroma(channels, intensities, durations) {
         .catch(error => console.error('Error:', error));
 }
 
-diffuseAroma([6], [100], [100]);
+diffuseAroma([1], [100], [100]);
